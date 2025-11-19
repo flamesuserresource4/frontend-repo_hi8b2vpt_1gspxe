@@ -15,32 +15,68 @@
   html {
     font-family: var(--font-sans);
     font-feature-settings: "rlig" 1, "calt" 1;
+    scroll-behavior: smooth;
   }
 
   body {
-    @apply antialiased;
+    @apply antialiased bg-slate-950 text-white;
+  }
+
+  ::selection {
+    background: rgba(168,85,247,0.35);
+    color: white;
   }
 }
 
-/* Custom utility classes for shadcn/ui patterns */
+/* Background grid + noise utilities */
 @layer utilities {
-  .animate-in {
-    animation-name: animateIn;
-    animation-duration: 350ms;
-    --tw-enter-opacity: initial;
-    --tw-enter-scale: initial;
-    --tw-enter-rotate: initial;
-    --tw-enter-translate-x: initial;
-    --tw-enter-translate-y: initial;
+  .bg-grid-slate {
+    background-image: linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: center;
+  }
+  .bg-noise {
+    position: relative;
+  }
+  .bg-noise::after {
+    content: "";
+    position: absolute; inset: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
   }
 
-  .animate-out {
-    animation-name: animateOut;
-    animation-duration: 350ms;
-    --tw-exit-opacity: initial;
-    --tw-exit-scale: initial;
-    --tw-exit-rotate: initial;
-    --tw-exit-translate-x: initial;
-    --tw-exit-translate-y: initial;
+  /* Reveal animations */
+  @keyframes floaty {
+    0%,100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
   }
+  .animate-floaty {
+    animation: floaty 6s ease-in-out infinite;
+  }
+
+  @keyframes shine {
+    0% { transform: translateX(-150%); }
+    100% { transform: translateX(150%); }
+  }
+  .btn-shine {
+    position: relative; overflow: hidden;
+  }
+  .btn-shine::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.25) 50%, transparent 80%);
+    transform: translateX(-150%);
+  }
+  .btn-shine:hover::before { animation: shine 1.2s ease; }
+
+  /* Card ring on hover */
+  .ring-gradient {
+    position: relative;
+  }
+  .ring-gradient::before {
+    content: ""; position: absolute; inset: -1px; border-radius: 1rem;
+    background: linear-gradient(135deg, rgba(99,102,241,0.35), rgba(217,70,239,0.35), rgba(245,158,11,0.35));
+    filter: blur(10px); opacity: 0; transition: opacity .3s ease;
+  }
+  .ring-gradient:hover::before { opacity: 1; }
 }
